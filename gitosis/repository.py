@@ -1,5 +1,6 @@
 import errno
 import os
+import os.path
 import re
 import subprocess
 import sys
@@ -14,6 +15,10 @@ class GitError(Exception):
 
 class GitInitError(Exception):
     """git init failed"""
+
+class GitCloneError(Exception):
+    """git clone failed"""
+
 
 def init(
     path,
@@ -53,6 +58,64 @@ def init(
     if returncode != 0:
         raise GitInitError('exit status %d' % returncode)
 
+def fork(
+    new_path,
+    old_path,
+    template=None,
+    _git=None,
+    ):
+    """
+    Create a git repository at C{new_path} as a fork from
+    the repository at C{old_path}.
+
+    Leading directories of C{path} must exist.
+
+    If there is already a repository at C{new_path}, only
+    an alternates link is added to C{old_path} if it is missing.
+
+    @param new_path: Path of repository create.
+
+    @type path: str
+
+    @param old_path: Path of repository to fork.
+
+    @type path: str
+
+    @param template: Template directory, to pass to C{git init}.
+
+    @type template: str
+    """
+    if _git is None:
+        _git = 'git'
+
+    if os.path.exists(new_path):
+        alternates = os.path.join(new_path, 'objects', 'info', 'alternates')
+        if not os.path.exists(alternates):
+            afile = open(alternates, 'w')
+            afile.write(os.path.join(old_path, 'objects') + "\n")
+            afile.close
+        else:
+            #TODO
+            pass
+    else:
+        args = [
+            _git,
+            'clone',
+            '--bare',
+            '--shared',
+            ]
+        if template is not None:
+            args.append('--template=%s' % template)
+        args.append(old_path)
+        args.append(new_path)
+        returncode = subprocess.call(
+            args=args,
+            cwd=old_path,
+            stdout=sys.stderr,
+            close_fds=True,
+            )
+        if returncode != 0:
+            raise GitCloneError('exit status %d' % returncode)
 
 class GitFastImportError(GitError):
     """git fast-import failed"""

@@ -12,6 +12,7 @@ from gitosis import repository
 from gitosis import ssh
 from gitosis import gitweb
 from gitosis import gitdaemon
+from gitosis import forks
 from gitosis import app
 from gitosis import util
 
@@ -31,6 +32,7 @@ def post_update(cfg, git_dir):
         )
     # re-read config to get up-to-date settings
     cfg.read(os.path.join(export, '..', 'gitosis.conf'))
+    forks.update_forks(config=cfg)
     gitweb.set_descriptions(
         config=cfg,
         )
