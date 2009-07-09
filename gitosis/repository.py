@@ -117,6 +117,34 @@ def fork(
         if returncode != 0:
             raise GitCloneError('exit status %d' % returncode)
 
+def setHEAD(
+    path,
+    branch
+    ):
+    """
+    Point HEAD of repository C{path} to refs/heads/C{branch}.
+
+    @param path: Path of the repository to work on.
+
+    @type path: str
+
+    @param branch: Branch that HEAD should point to.
+
+    @type path: str
+    """
+    if os.path.exists(path):
+        head = os.path.join(path, 'HEAD')
+        if os.path.islink(head):
+            # do not change anything if HEAD is a symlink
+            return
+        elif os.path.isfile(head):
+            hfile = open(head, 'w')
+            hfile.write("ref: refs/heads/%s\n" % branch)
+            hfile.close
+        else:
+            return
+
+
 class GitFastImportError(GitError):
     """git fast-import failed"""
     pass

@@ -14,6 +14,7 @@ from gitosis import gitweb
 from gitosis import gitdaemon
 from gitosis import forks
 from gitosis import attic
+from gitosis import heads
 from gitosis import app
 from gitosis import util
 
@@ -35,6 +36,7 @@ def post_update(cfg, git_dir):
     cfg.read(os.path.join(export, '..', 'gitosis.conf'))
     forks.update_forks(config=cfg)
     attic.update_attic(config=cfg)
+    heads.update_heads(config=cfg)
     gitweb.set_descriptions(
         config=cfg,
         )
