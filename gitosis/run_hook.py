@@ -7,6 +7,7 @@ import logging
 import os
 import sys
 import shutil
+import ConfigParser
 
 from gitosis import repository
 from gitosis import ssh
@@ -33,6 +34,7 @@ def post_update(cfg, git_dir):
         os.path.join(export, '..', 'gitosis.conf'),
         )
     # re-read config to get up-to-date settings
+    cfg = ConfigParser.RawConfigParser()
     cfg.read(os.path.join(export, '..', 'gitosis.conf'))
     forks.update_forks(config=cfg)
     attic.update_attic(config=cfg)
