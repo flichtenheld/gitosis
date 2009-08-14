@@ -79,7 +79,7 @@ def generate_project_list_fp(config, fp):
             if os.path.exists(os.path.join(repositories, namedotgit)):
                 name = namedotgit
             else:
-                log.warning(
+                log.debug(
                     'Cannot find %(name)r in %(repositories)r'
                     % dict(name=name, repositories=repositories))
 
@@ -146,7 +146,7 @@ def set_descriptions(config):
             if os.path.exists(os.path.join(repositories, namedotgit)):
                 name = namedotgit
             else:
-                log.warning(
+                log.debug(
                     'Cannot find %(name)r in %(repositories)r'
                     % dict(name=name, repositories=repositories))
                 continue
