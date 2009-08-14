@@ -10,6 +10,7 @@ import sys, os, re
 
 from gitosis import access
 from gitosis import repository
+from gitosis import heads
 from gitosis import gitweb
 from gitosis import gitdaemon
 from gitosis import app
@@ -143,6 +144,7 @@ def serve(
             util.mkdir(p, 0750)
 
         repository.init(path=fullpath)
+        heads.update_heads(config=cfg)
         gitweb.set_descriptions(
             config=cfg,
             )
